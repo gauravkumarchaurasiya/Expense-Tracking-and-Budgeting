@@ -39,6 +39,8 @@ def train_word2vec_model(sentences):
     """Train a Word2Vec model on the sentences."""
     logger.info("Training Word2Vec model...")
     model = Word2Vec(sentences, vector_size=100, window=5, min_count=1, workers=4)
+    temp = Path(__file__).parent.parent.parent/'models'
+    temp.mkdir(parents=True, exist_ok=True)
     model.save(str(Path(__file__).parent.parent.parent/'models'/'word2vec.model'))  # Save the model for future use
     return model
 
