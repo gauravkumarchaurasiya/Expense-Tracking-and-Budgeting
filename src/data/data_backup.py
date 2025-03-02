@@ -3,6 +3,7 @@ import pandas as pd
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from pathlib import Path
+from src.logger import logger
 
 # Load environment variables
 load_dotenv()
@@ -36,9 +37,9 @@ if data:
     csv_path = raw_folder/ "Expense_Dataset.csv"
     df.to_csv(csv_path, index=False)
 
-    print(f"✅ Data successfully saved to {csv_path}")
+    logger.info(f"✅ Data successfully saved to {csv_path}")
 else:
-    print("⚠️ No data found in the collection.")
+    logger.info("⚠️ No data found in the collection.")
 
 # Close MongoDB connection
 client.close()

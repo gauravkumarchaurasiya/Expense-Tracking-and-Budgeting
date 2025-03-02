@@ -1,4 +1,6 @@
+import subprocess
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import JSONResponse
 from src.backend.schemas import *
 from src.backend.database import expenses_collection, budgets_collection
 from datetime import datetime
@@ -6,6 +8,7 @@ from src.backend.ml_model import predict_category
 import pandas as pd
 from datetime import datetime, timedelta
 from src.backend.budget_advisor import *
+from pathlib import Path
 
 router = APIRouter()
 
@@ -14,6 +17,8 @@ router = APIRouter()
 async def add_expense(expense: ExpenseCreate):
     try:
         # Predict category
+        print(expense)
+        print(type(expense))
         predicted_category = predict_category(expense.title, expense.amount, expense.account, expense.type)
 
          # Step 2: Validate category using Gemini API
@@ -137,3 +142,50 @@ def get_budget_analysis():
 def get_budget_advice():
     """Generates AI-powered budget recommendations."""
     return {"advice": generate_budget_advice()}
+
+
+@router.post("/retrain")
+async def retrain_model():
+    try:
+        # Run the Python script (make sure the path is correct)
+        process = subprocess.Popen(
+            ["python", "path/to/start_code.py"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        # Optionally, wait for the process to finish (or run asynchronously)
+        stdout, stderr = process.communicate()
+        
+        # Log output for debugging
+        print("Retrain stdout:", stdout)
+        print("Retrain stderr:", stderr)
+        
+        return JSONResponse(status_code=200, content={"message": "Retraining started", "stdout": stdout, "stderr": stderr})
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"detail": f"Error starting retraining: {str(e)}"})
+    
+LOG_FILE_PATH = Path(Path(__file__).parent.parent.parent/"logs"/"log.log"/"log.log")  
+
+@router.get("/retrain/logs")
+async def get_retrain_logs():
+    try:
+        if not LOG_FILE_PATH.exists():
+            raise HTTPException(status_code=404, detail="Log file not found")
+        with LOG_FILE_PATH.open("r") as file:
+            logs = file.read()
+        return JSONResponse(status_code=200, content={"logs": logs})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@router.post("/retrain/clear_logs")
+async def clear_retrain_logs():
+    try:
+        if LOG_FILE_PATH.exists():
+            with LOG_FILE_PATH.open("w") as file:
+                file.truncate(0)  # Clears the file content
+            return JSONResponse(status_code=200, content={"message": "Log file cleared."})
+        else:
+            raise HTTPException(status_code=404, detail="Log file not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

@@ -3,10 +3,21 @@ const API_URL = "http://127.0.0.1:8000";
 document.addEventListener("DOMContentLoaded", () => {
     fetchBudget();
     fetchTransactions();
-    fetchAIAdvice();
+    fetchLastTransaction();
+    // fetchAIAdvice();
     fetchCharts();
+    setupDarkMode();
+    RetrainModelOnDBData();
 });
-
+document.getElementById('ai-advice-btn').addEventListener('click', function() {
+    // Reveal the advice paragraph
+    const adviceElement = document.getElementById("ai-advice");
+    adviceElement.style.display = 'block';
+    adviceElement.textContent = 'Loading AI advice...';
+    
+    // Fetch and display the AI advice
+    fetchAIAdvice();
+});
 function fetchBudget() {
     fetch(`${API_URL}/budget/`)
         .then(response => response.json())
@@ -30,16 +41,41 @@ function addExpense() {
     const amount = parseFloat(document.getElementById("amount").value);
     const account = document.getElementById("account").value;
     const type = document.getElementById("type").value;
-    
+
+    if (!title || isNaN(amount) || amount <= 0) {
+        // Optionally, show an error message on screen if needed.
+        return;
+    }
+
     fetch(`${API_URL}/expenses/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title, amount, account, type })
-    }).then(() => {
-        fetchTransactions();
-        fetchBalance();
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Show a success message
+        const msg = document.getElementById("success-msg");
+        msg.textContent = "Expense added successfully!";
+        msg.style.color = "green";
+        msg.style.display = "block";
+
+        // Optionally, hide the message after a few seconds and refresh the page
+        setTimeout(() => {
+            msg.style.display = "none";
+            location.reload();
+        }, 2000);
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        // Optionally, show an error message in red on screen
+        const msg = document.getElementById("success-msg");
+        msg.textContent = "Failed to add expense. Please try again.";
+        msg.style.color = "red";
+        msg.style.display = "block";
     });
 }
+
 
 function fetchTransactions() {
     fetch(`${API_URL}/expenses/`)
@@ -57,6 +93,15 @@ function fetchTransactions() {
                         <td>${expense.category || 'N/A'}</td>
                     </tr>`;
             });
+        });
+}
+
+function fetchLastTransaction() {
+    fetch(`${API_URL}/expenses/last`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("last-transaction").textContent = 
+                `${data.title} - ₹${data.amount} (${data.type}) | Category: ${data.category}`;
         });
 }
 
@@ -113,3 +158,29 @@ function fetchCharts() {
             });
         });
 }
+
+function setupDarkMode() {
+    const themeToggle = document.getElementById("theme-toggle");
+    themeToggle.addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode");
+    });
+}
+function RetrainModelOnDBData() {
+    const rerun = document.getElementById("re-train");
+    rerun.addEventListener("click", () => {
+        // Call your backend endpoint that triggers start_code.py
+        fetch(`${API_URL}/retrain`, {
+            method: "POST"
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Retrain started:", data);
+            // Open the logs page in a new tab/window
+            window.open("static/logs.html", "_blank");
+        })
+        .catch(error => {
+            console.error("Error starting retrain process:", error);
+        });
+    });
+}
+

@@ -2,6 +2,7 @@ import joblib
 import pandas as pd
 from gensim.models import Word2Vec
 from pathlib import Path
+from src.logger import logger
 from src.model.predict import reverse_ohe, get_predictions, processing
 
 # Load Models
@@ -30,10 +31,11 @@ def predict_category(title: str, amount: float, account: str, type: str):
             "account_encoded": account_encoded,
             "type_encoded": type_encoded
     }])
-    except:
+    except Exception as e:
         print(f"Error in predict_category: {e}")
         return "Unknown"
 
     processed_data = processing(input_data, word2vec_model)
+    logger.info(f'{processed_data}')
     prediction = get_predictions(model, processed_data)
     return reverse_ohe(prediction)  # Return predicted category

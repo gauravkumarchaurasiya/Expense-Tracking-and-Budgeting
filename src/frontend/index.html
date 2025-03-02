@@ -9,68 +9,83 @@
 </head>
 <body>
     <header>
-        <h1>💰 AI-Powered Expense Tracker & Budget Advisor</h1>
+        <h1>AI-Powered Expense Tracker & Budget Advisor</h1>
+        <div class="nav-bar">
+        <button id="re-train">Run</button>
+        <button id="theme-toggle">🌙</button>
+        </div>
     </header>
+    <div id="success-msg" style="display:none; text-align:center; margin-top: 20px; color: green;"></div>
     
-    <aside>
-        <h2>📊 Monthly Budget</h2>
-        <p id="monthly-budget">Loading...</p>
-        <h3>💰 Balance Left</h3>
-        <p id="balance-left">Loading...</p>
-        <h3>Set Monthly Budget</h3>
-        <input type="number" id="new-budget" min="0" placeholder="Enter new budget">
-        <button onclick="updateBudget()">Update Budget</button>
-    </aside>
-    
-    <main>
-        <section>
-            <h2>📌 Add Expense</h2>
-            <input type="text" id="title" placeholder="Title">
-            <input type="number" id="amount" placeholder="Amount" min="0.01">
-            <select id="account">
-                <option value="Cash">Cash</option>
-                <option value="Bank">Online</option>
-            </select>
-            <select id="type">
-                <option value="Expense">Expense</option>
-                <option value="Income">Income</option>
-            </select>
-            <button onclick="addExpense()">Add Expense</button>
-        </section>
+    <div class="container">
+        <aside class="sidebar">
+            <h2>Monthly Budget</h2>
+            <p id="monthly-budget">Loading...</p>
+            <h3>Balance Left</h3>
+            <p id="balance-left">Loading...</p>
+            <h3>Set Monthly Budget</h3>
+            <input type="number" id="new-budget" min="0" placeholder="Enter new budget">
+            <button onclick="updateBudget()">Update Budget</button>
+        </aside>
         
-        <section>
-            <h2>📜 All Transactions</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Amount</th>
-                        <th>Account</th>
-                        <th>Type</th>
-                        <th>Category</th>
-                    </tr>
-                </thead>
-                <tbody id="transactions-list">
-                    <tr><td colspan="5">Loading...</td></tr>
-                </tbody>
-            </table>
-        </section>
-        
-        <section>
-            <h2>📅 Today's Expenses</h2>
-            <canvas id="today-expense-chart"></canvas>
-        </section>
-        
-        <section>
-            <h2>📊 Monthly Expense Trend</h2>
-            <canvas id="monthly-expense-chart"></canvas>
-        </section>
-        
-        <section>
-            <h2>🧠 AI-Powered Budget Analysis</h2>
-            <p id="ai-advice">Loading AI advice...</p>
-        </section>
-    </main>
+        <main>
+            <section class="card">
+                <h2>📌 Add Expense</h2>
+                <div class="input-group">
+                    <input type="text" id="title" placeholder="Title">
+                    <input type="number" id="amount" placeholder="Amount" min="0.01">
+                    <select id="account">
+                        <option value="Cash">Cash</option>
+                        <option value="Bank">Online</option>
+                    </select>
+                    <select id="type">
+                        <option value="Expense">Expense</option>
+                        <option value="Income">Income</option>
+                    </select>
+                </div>
+                <button onclick="addExpense()">Add Expense</button>
+            </section>
+            
+            <section class="card">
+                <h2>📜 Last Transaction</h2>
+                <p id="last-transaction">Loading...</p>
+            </section>
+            
+            <section class="card">
+                <h2>📜 All Transactions</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Amount</th>
+                            <th>Account</th>
+                            <th>Type</th>
+                            <th>Category</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactions-list">
+                        <tr><td colspan="5">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </section>
+            
+            <section class="card">
+                <h2>📅 Today's Expenses</h2>
+                <canvas id="today-expense-chart"></canvas>
+            </section>
+            
+            <section class="card">
+                <h2>📊 Monthly Expense Trend</h2>
+                <canvas id="monthly-expense-chart"></canvas>
+            </section>
+            
+            <section class="card">
+                <h2>🧠 AI-Powered Budget Analysis</h2>
+                <button id="ai-advice-btn">Get AI Advice</button>
+                <p id="ai-advice" style="display: none;"></p>
+            </section>
+        </main>
+    </div>
     
     <script src="static/script.js"></script>
 </body>

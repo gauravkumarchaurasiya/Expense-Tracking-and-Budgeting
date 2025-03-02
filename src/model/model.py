@@ -9,7 +9,7 @@ from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, classification_report, f1_score, precision_score, recall_score
 from pathlib import Path
-from src.logger import logging
+from src.logger import logger
 
 TARGET = 'category'
 
@@ -19,7 +19,12 @@ def load_dataframe(path: Path) -> pd.DataFrame:
 
 def make_X_y(dataframe: pd.DataFrame, target_column: str):
     """Split a DataFrame into feature matrix X and target vector y."""
-    X = dataframe.drop(columns=target_column)
+    dataframe.dropna()
+    X = dataframe.drop(columns=[target_column,'_id','date'])
+    # X['account_encoded'] = X['account'].replace({'Cash': 1, 'Bank': 0})
+    # X['type_encoded'] = X['type'].replace({'Expense': 1, 'Income': 0})
+    # X.drop(columns=['account','type'],inplace=True)
+    # print(X)
     y = dataframe[target_column]
     y = pd.get_dummies(y, drop_first=False)
     y = y.astype(int)
@@ -49,7 +54,7 @@ def main():
 
     train_data = load_dataframe(training_data_path)
     X_train, y_train = make_X_y(dataframe=train_data, target_column=TARGET)
-    logging.info("Train Test split successful")
+    logger.info("Train Test split successful")
 
 
     # Define models
@@ -72,11 +77,11 @@ def main():
         for name, model in models.items()
     }
     for model_name, model in multi_label_models.items():
-        logging.info(f'{model_name} is training...')
+        logger.info(f'{model_name} is training...')
         trained_model = train_model(model=model, X_train=X_train, y_train=y_train)
 
         accuracy, f1, precision, recall = evaluate_model(model=trained_model, X_test=X_train, y_test=y_train)
-        logging.info(f"{model_name} - Accuracy: {accuracy}, F1: {f1}, Precision: {precision}, Recall: {recall}")
+        logger.info(f"{model_name} - Accuracy: {accuracy}, F1: {f1}, Precision: {precision}, Recall: {recall}")
         
         model_names.append(model_name)
         accuracy_scores.append(accuracy)
@@ -89,14 +94,14 @@ def main():
         model_output_path_ = model_output_path / f'{model_name.lower()}.joblib'
         save_model(model=trained_model, save_path=model_output_path_)
 
-    logging.info("Step 4: Completed Model Training")
+    logger.info("Step 4: Completed Model Training")
     
     best_model_index = accuracy_scores.index(max(accuracy_scores))
     best_model_name = model_names[best_model_index]
     best_model = multi_label_models[best_model_name]
     file_name = "best_model.joblib"
     save_model(model = best_model, save_path=model_output_path/file_name)
-    logging.info("Step 5: Best Model Saved as best_model.joblib ...")
+    logger.info("Step 5: Best Model Saved as best_model.joblib ...")
 
 if __name__ == "__main__":
     main()
