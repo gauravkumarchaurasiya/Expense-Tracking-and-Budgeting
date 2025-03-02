@@ -36,7 +36,8 @@
   <pre id="logs">Loading logs...</pre>
 
   <script>
-      const API_URL = "http://localhost:8000"; 
+    //   const API_URL = "http://localhost:8000"; 
+    const API_URL = window.location.origin;
 
       function fetchLogs() {
           fetch(`${API_URL}/retrain/logs`)

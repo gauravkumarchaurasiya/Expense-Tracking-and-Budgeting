@@ -134,7 +134,7 @@ canvas {
 
 /* Dark Mode */
 .dark-mode {
-    background-color: #121212;
+    background-color: #121212c8;
     color: white;
 }
 
