@@ -1,5 +1,5 @@
-import subprocess
 import os
+import subprocess
 import sys
 
 def run_command(command):
@@ -24,8 +24,8 @@ run_command("python src/model/model.py")
 print("Running Model Prediction...")
 run_command("python src/model/predict.py")
 
-port = 8000
+port = os.environ.get("PORT", "8000")
 print(f"Starting FastAPI Server on port {port}...")
 
-# Run uvicorn in blocking (foreground) mode so that the script doesn't exit until uvicorn stops.
+# Run uvicorn in the foreground so that Render can detect the open port
 subprocess.run(f"uvicorn src.backend.main:app --host 0.0.0.0 --port {port}", shell=True)
