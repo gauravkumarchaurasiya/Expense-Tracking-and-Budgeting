@@ -27,9 +27,5 @@ run_command("python src/model/predict.py")
 port = 8000
 print(f"Starting FastAPI Server on port {port}...")
 
-# Start FastAPI server without blocking
-fastapi_process = subprocess.Popen(f"uvicorn src.backend.main:app --host 0.0.0.0 --port {port}", shell=True)
-
-# Ensure FastAPI started properly (checking logs might help)
-if fastapi_process.poll() is None:
-    print("FastAPI server is running in the background.")
+# Run uvicorn in blocking (foreground) mode so that the script doesn't exit until uvicorn stops.
+subprocess.run(f"uvicorn src.backend.main:app --host 0.0.0.0 --port {port}", shell=True)
