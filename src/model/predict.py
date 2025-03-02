@@ -91,7 +91,8 @@ def reverse_ohe(y_encoded: np.ndarray):
         4: 'Medical & Healthcare 🏥',
         5: 'Entertainment & Leisure 🎬',
         6: 'Rent & Housing 🏠',
-        7: 'Miscellaneous 💰'
+        7: 'Miscellaneous 💰',
+        8: 'Others'
     }
     predicted_indices = np.argmax(y_encoded, axis=1)
     predicted_categories = [category_mapping[idx] for idx in predicted_indices]
