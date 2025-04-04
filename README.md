@@ -1,6 +1,6 @@
-# AI Financial Advisor – Expense Tracker & Budget Manager (Frontend)
+# AI-Powered Expense Tracker & Budget Advisor
 
-The AI-Powered Expense Tracker is a web-based financial management system designed to help users monitor and optimize their daily and monthly expenses. Users can add transactions, visualize spending patterns using Chart.js, set budgets, and receive personalized financial insights.
+The AI-Powered Expense Tracker is a web-based financial management system designed to help users monitor and optimize their daily and monthly expenses. Users can add transactions, visualize spending pattern, set budgets, and receive personalized financial insights.
 
 - Track daily expenses
 - View monthly spending charts
